@@ -43,10 +43,14 @@ public class ToDoDaoImpl implements ToDoDao{
 
     @Override
     public Observable<Optional<ToDo>> update(ToDo toDo) {
-        return
-                toDos.get(toDo.getId())!=null
-                        ? Observable.fromCallable(() -> Optional.of(toDos.replace(toDo.getId(), toDo)))
-                        : Observable.fromCallable(() -> Optional.empty()) ;
+        Optional<ToDo> result;
+        if(toDos.get(toDo.getId())!=null){
+            toDos.replace(toDo.getId(), toDo);
+            result = Optional.of(toDos.get(toDo.getId()));
+        }else{
+            result = Optional.empty();
+        }
+        return Observable.fromCallable(() -> result);
     }
 
     @Override
