@@ -28,32 +28,34 @@ public class ToDoDaoImpl implements ToDoDao{
     public Observable<ToDo> create(ToDoDto dto) {
         ToDo todo = new ToDo(dto.getTitle(), dto.getDescription());
         toDos.put(todo.getId(), todo);
-        return Observable.just(todo);
+        return Observable.fromCallable(() -> todo);
     }
 
     @Override
     public Observable<Optional<ToDo>> read(String id) {
-        return Observable.just(Optional.ofNullable(toDos.get(id)));
+        return Observable.fromCallable(() -> Optional.ofNullable(toDos.get(id)));
     }
 
     @Override
     public Observable<List<ToDo>> readAll() {
         return Observable.fromCallable(() -> new ArrayList<>(toDos.values()));
-        //return Observable.just(toDos.entrySet().stream().map(entry -> entry.getValue()).collect(Collectors.toList()));
     }
 
     @Override
     public Observable<Optional<ToDo>> update(ToDo toDo) {
-        return toDos.get(toDo.getId())!=null ? Observable.just(Optional.of(toDos.replace(toDo.getId(), toDo))) :  Observable.just(Optional.empty()) ;
+        return
+                toDos.get(toDo.getId())!=null
+                        ? Observable.fromCallable(() -> Optional.of(toDos.replace(toDo.getId(), toDo)))
+                        : Observable.fromCallable(() -> Optional.empty()) ;
     }
 
     @Override
     public Observable<Boolean> delete(String id) {
         if(toDos.get(id)!=null) {
             toDos.remove(id);
-            return Observable.just(true);
+            return Observable.fromCallable(() -> true);
         }
-        return Observable.just(false);
+        return Observable.fromCallable(() -> false);
     }
 
     private void initializeDB(){
