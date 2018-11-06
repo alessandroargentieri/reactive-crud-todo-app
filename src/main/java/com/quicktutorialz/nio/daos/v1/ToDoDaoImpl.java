@@ -47,7 +47,12 @@ public class ToDoDaoImpl implements ToDoDao{
 
     @Override
     public Optional<ToDo> update(ToDo toDo) {
-        return toDos.get(toDo.getId())!=null ? Optional.of(toDos.replace(toDo.getId(), toDo)) :  Optional.empty() ;
+        if(toDos.get(toDo.getId())!=null){
+            toDos.replace(toDo.getId(), toDo);
+            return Optional.of(toDos.get(toDo.getId()));
+        }else{
+            return Optional.empty();
+        }
     }
 
     @Override
